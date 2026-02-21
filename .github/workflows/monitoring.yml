@@ -1,0 +1,33 @@
+name: Monitor Aeon openQA
+
+on:
+  workflow_dispatch:
+  schedule:
+    #        ┌───────────── minute (0 - 59)
+    #        │  ┌───────────── hour (0 - 23)
+    #        │  │  ┌───────────── day of the month (1 - 31)
+    #        │  │  │ ┌───────────── month (1 - 12 or JAN-DEC)
+    #        │  │  │ │ ┌───────────── day of the week (0 - 6 or SUN-SAT)
+    #        │  │  │ │ │
+    #        │  │  │ │ │
+    #        │  │  │ │ │
+    #        *  *  * * *
+    - cron: '00 12 * * *'
+
+jobs:
+  check_status:
+    name: Check Aeon openQA result
+    runs-on: ubuntu-slim
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Install dependencies
+        uses: awalsh128/cache-apt-pkgs-action@v1
+        with:
+          packages: >
+            jq
+          version: 1.0
+
+      - name: Run script
+        run: ./check-openqa-aeon.sh
